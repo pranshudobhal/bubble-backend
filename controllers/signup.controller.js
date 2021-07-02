@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const createNewUser = async (req, res) => {
-  console.log('here in signup');
   try {
     const { firstName, lastName, username, email, password } = req.body;
     const saltRounds = 10;

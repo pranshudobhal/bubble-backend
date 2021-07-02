@@ -11,6 +11,8 @@ const loginRouter = require('./routers/login.router');
 const signupRouter = require('./routers/signup.router');
 const userRouter = require('./routers/user.router');
 
+const postRouter = require('./routers/post.router');
+
 const port = process.env.PORT;
 const app = express();
 
@@ -28,6 +30,8 @@ app.use('/signup', signupRouter);
 
 app.use(verifyAuth);
 app.use('/user', userRouter);
+
+app.use('/post', postRouter);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route does not exist!' });

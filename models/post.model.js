@@ -3,11 +3,10 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema(
   {
-    _id: Schema.Types.ObjectId,
-    username: {
-      type: String,
+    userID: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'userID cannot be empty'],
       ref: 'User',
-      required: [true, 'username cannot be empty'],
     },
     content: {
       type: String,
@@ -21,4 +20,4 @@ const postSchema = new Schema(
 
 const Post = new mongoose.model('Post', postSchema);
 
-module.exports = {};
+module.exports = { Post };

@@ -25,6 +25,9 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Password cannot be empty'],
     },
+    profileImageURL: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

@@ -3,8 +3,12 @@ const { User } = require('../models/user.model');
 const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.params;
+    const user = await User.findOne({ username }).select('username firstName lastName profileImageURL');
 
-    const user = await User.findOne({ username }).select('username firstName lastName');
+    if (!user) {
+      return res.json({ success: false, message: 'No such user exists' });
+    }
+
     res.json({ success: true, user });
   } catch (error) {
     res.json({ success: false, message: 'Error retrieving user data', errorMessage: error.message });

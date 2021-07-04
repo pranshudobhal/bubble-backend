@@ -22,10 +22,12 @@ const loginUser = async (req, res) => {
     }
 
     const userData = {
+      userID: user._id,
       username: user.username,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      profileImageURL: user.profileImageURL,
     };
 
     const token = jwt.sign({ userID: user._id }, process.env.SECRET, { expiresIn: '24h' });

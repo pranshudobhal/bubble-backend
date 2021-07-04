@@ -22,6 +22,7 @@ const createNewUser = async (req, res) => {
         username: username,
         email: email,
         password: hashedPassword,
+        profileImageURL: 'https://unsplash.it/400/400',
       });
 
       const token = jwt.sign({ userID: newUser._id }, process.env.SECRET, { expiresIn: '24h' });
@@ -29,10 +30,12 @@ const createNewUser = async (req, res) => {
       await newUser.save();
 
       const userData = {
+        userID: newUser._id,
         username: newUser.username,
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         email: newUser.email,
+        profileImageURL: newUser.profileImageURL,
       };
 
       res.status(201).json({ success: true, message: 'User has been created', userData, token });

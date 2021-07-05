@@ -12,6 +12,15 @@ const postSchema = new Schema(
       type: String,
       required: [true, 'post content cannot be empty'],
     },
+    reactions: {
+      type: Map,
+      of: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      ],
+    },
   },
   {
     timestamps: true,

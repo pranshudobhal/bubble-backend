@@ -16,6 +16,13 @@ const createNewPost = async (req, res) => {
     const newPost = new Post({
       userID: userID,
       content: content,
+      reactions: {
+        thumbsUp: [],
+        hooray: [],
+        heart: [],
+        rocket: [],
+        eyes: [],
+      },
     });
 
     await newPost.save();
@@ -31,11 +38,48 @@ const createNewPost = async (req, res) => {
 const deletePost = async (req, res) => {
   try {
     const { postID } = req.params;
-    const allPosts = await Post.find({});
-    res.json({ success: true, allPosts });
+    const post = await Post.findByIdAndDelete(postID);
+
+    res.json({ success: true, message: 'Post has been deleted!', post });
   } catch (error) {
     res.json({ success: false, message: 'Error deleting post!', errorMessage: error.message });
   }
 };
 
-module.exports = { getAllPosts, createNewPost, deletePost };
+const addReactionToPost = async (req, res) => {
+  try {
+    const { postID, reaction } = req.params;
+    const { userID } = req.body;
+
+    const post = await Post.findById(postID);
+    const updatedPost = post.reactions.get(reaction);
+    updatedPost.push(userID);
+    post.reactions.set(reaction, updatedPost);
+
+    post.save();
+
+    res.json({ success: true, message: 'Reaction has been added to post!', postID, reaction, userID });
+  } catch (error) {
+    res.json({ success: false, message: 'Error adding reaction from post!', errorMessage: error.message });
+  }
+};
+
+const removeReactionToPost = async (req, res) => {
+  try {
+    const { postID, reaction } = req.params;
+    const { userID } = req.body;
+
+    const post = await Post.findById(postID);
+    const updatedPost = post.reactions.get(reaction);
+    updatedPost.remove(userID);
+    post.reactions.set(reaction, updatedPost);
+
+    post.save();
+
+    res.json({ success: true, message: 'Reaction has been removed from post!', postID, reaction, userID });
+  } catch (error) {
+    res.json({ success: false, message: 'Error removing reaction from post!', errorMessage: error.message });
+  }
+};
+
+module.exports = { getAllPosts, createNewPost, deletePost, addReactionToPost, removeReactionToPost };

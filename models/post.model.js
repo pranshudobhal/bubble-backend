@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema(
   {
-    userID: {
+    user: {
       type: Schema.Types.ObjectId,
       required: [true, 'userID cannot be empty'],
       ref: 'User',

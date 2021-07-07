@@ -21,14 +21,20 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Error logging in!!!' });
     }
 
-    const userData = {
-      userID: user._id,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      profileImageURL: user.profileImageURL,
-    };
+    const userData = await User.findById(user._id)
+      .populate([
+        {
+          path: 'followers',
+          select: 'username firstName lastName profileImageURL',
+          model: User,
+        },
+        {
+          path: 'following',
+          select: 'username firstName lastName profileImageURL',
+          model: User,
+        },
+      ])
+      .select('username firstName lastName profileImageURL');
 
     const token = jwt.sign({ userID: user._id }, process.env.SECRET, { expiresIn: '24h' });
     res.status(200).json({ success: true, userData, token });

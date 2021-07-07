@@ -23,20 +23,28 @@ const createNewUser = async (req, res) => {
         email: email,
         password: hashedPassword,
         profileImageURL: 'https://unsplash.it/400/400',
+        followers: [],
+        following: [],
       });
 
       const token = jwt.sign({ userID: newUser._id }, process.env.SECRET, { expiresIn: '24h' });
 
       await newUser.save();
 
-      const userData = {
-        userID: newUser._id,
-        username: newUser.username,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email,
-        profileImageURL: newUser.profileImageURL,
-      };
+      const userData = await User.findById(newUser._id)
+        .populate([
+          {
+            path: 'followers',
+            select: 'username firstName lastName profileImageURL',
+            model: User,
+          },
+          {
+            path: 'following',
+            select: 'username firstName lastName profileImageURL',
+            model: User,
+          },
+        ])
+        .select('username firstName lastName profileImageURL');
 
       res.status(201).json({ success: true, message: 'User has been created', userData, token });
     }

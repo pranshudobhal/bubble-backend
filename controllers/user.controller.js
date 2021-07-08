@@ -1,5 +1,39 @@
 const { User } = require('../models/user.model');
 
+const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await User.find({}).select('firstName lastName username profileImageURL');
+    res.json({ success: true, allUsers });
+  } catch (error) {
+    res.json({ success: false, message: 'Error retrieving all users', errorMessage: error.message });
+  }
+};
+
+const getLoggedInUserData = async (req, res) => {
+  try {
+    const { userID } = req.user;
+
+    const loggedInUser = await User.findById(userID)
+      .populate([
+        {
+          path: 'followers',
+          select: 'username firstName lastName profileImageURL',
+          model: User,
+        },
+        {
+          path: 'following',
+          select: 'username firstName lastName profileImageURL',
+          model: User,
+        },
+      ])
+      .select('username firstName lastName profileImageURL');
+
+    res.json({ success: true, loggedInUser });
+  } catch (error) {
+    res.json({ success: false, message: 'Error retrieving logged in user', errorMessage: error.message });
+  }
+};
+
 const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.params;
@@ -99,31 +133,4 @@ const unFollowUser = async (req, res) => {
   }
 };
 
-/**
- * TODO:
- * 1. Find and update user data
- */
-const updateUserData = async (req, res) => {
-  try {
-    const { userID } = req.user;
-    const user = await User.findById(userID);
-    res.json({ success: true, user });
-  } catch (error) {
-    res.json({ success: false, message: 'Error updating user data', errorMessage: error.message });
-  }
-};
-
-/**
- * TODO:
- * 1. Find and delete user
- */
-const deleteUser = async (req, res) => {
-  try {
-    const user = await User.find({});
-    res.json({ success: true, user });
-  } catch (error) {
-    res.json({ success: false, message: 'Error deleting user', errorMessage: error.message });
-  }
-};
-
-module.exports = { getUserByUsername, followUser, unFollowUser, updateUserData, deleteUser };
+module.exports = { getLoggedInUserData, getAllUsers, getUserByUsername, followUser, unFollowUser };

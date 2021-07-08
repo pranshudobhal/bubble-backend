@@ -1,8 +1,13 @@
+const { User } = require('../models/user.model');
 const { Post } = require('../models/post.model');
 
 const getAllPosts = async (req, res) => {
   try {
-    const allPosts = await Post.find({}).populate('user', '_id firstName lastName username profileImageURL');
+    const { userID } = req.user;
+
+    const loggedInUser = await User.findById(userID);
+    const allPosts = await Post.find({ user: { $in: [...loggedInUser.following, userID] } }).populate('user', '_id firstName lastName username profileImageURL');
+
     res.json({ success: true, allPosts });
   } catch (error) {
     res.json({ success: false, message: 'Error retrieving posts!', errorMessage: error.message });

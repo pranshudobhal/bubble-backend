@@ -57,13 +57,17 @@ const addReactionToPost = async (req, res) => {
     const { userID } = req.body;
 
     const post = await Post.findById(postID);
-    const updatedPost = post.reactions.get(reaction);
-    updatedPost.push(userID);
-    post.reactions.set(reaction, updatedPost);
+    const getIndividualReaction = post.reactions.get(reaction);
 
-    await post.save();
+    const hasUserReacted = getIndividualReaction.find((id) => id === userID);
 
-    res.json({ success: true, message: 'Reaction has been added to post!', postID, reaction, userID });
+    if (!hasUserReacted) {
+      getIndividualReaction.push(userID);
+      post.reactions.set(reaction, getIndividualReaction);
+
+      await post.save();
+      return res.json({ success: true, message: 'Reaction has been added to post!', postID, reaction, userID });
+    }
   } catch (error) {
     res.json({ success: false, message: 'Error adding reaction from post!', errorMessage: error.message });
   }
@@ -75,9 +79,9 @@ const removeReactionToPost = async (req, res) => {
     const { userID } = req.body;
 
     const post = await Post.findById(postID);
-    const updatedPost = post.reactions.get(reaction);
-    updatedPost.remove(userID);
-    post.reactions.set(reaction, updatedPost);
+    const getIndividualReaction = post.reactions.get(reaction);
+    getIndividualReaction.remove(userID);
+    post.reactions.set(reaction, getIndividualReaction);
 
     await post.save();
 

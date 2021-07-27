@@ -91,4 +91,18 @@ const removeReactionToPost = async (req, res) => {
   }
 };
 
-module.exports = { getAllPosts, createNewPost, deletePost, addReactionToPost, removeReactionToPost };
+const getAllPostsByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+
+    const allUserPosts = await Post.find({ user: user._id }).populate('user', '_id firstName lastName username profileImageURL');
+
+    res.json({ success: true, allUserPosts });
+  } catch (error) {
+    res.json({ success: false, message: 'Error retrieving posts by username!', errorMessage: error.message });
+  }
+};
+
+module.exports = { getAllPosts, createNewPost, deletePost, addReactionToPost, removeReactionToPost, getAllPostsByUsername };

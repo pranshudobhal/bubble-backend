@@ -1,0 +1,31 @@
+{
+  "name": "bubble-backend",
+  "version": "1.0.0",
+  "description": "Backend for Bubble",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pranshudobhal/bubble-backend.git"
+  },
+  "author": "Pranshu Dobhal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pranshudobhal/bubble-backend/issues"
+  },
+  "homepage": "https://github.com/pranshudobhal/bubble-backend#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.0",
+    "mongoose-type-email": "^1.1.2",
+    "uuid": "^8.3.2"
+  }
+}
